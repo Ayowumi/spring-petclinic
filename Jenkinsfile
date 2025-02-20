@@ -7,24 +7,20 @@ pipeline {
         stage('Build and Code Coverage') {
             steps {
                 script {
-                    // Clean and build the project, generate code coverage report
-                    sh './gradlew clean build jacocoTestReport'
+                    // Clean, test, and generate code coverage report
+                    sh './gradlew clean test jacocoTestReport'
                 }
             }
             post {
                 success {
-                    // Archive the artifact and the JaCoCo report
-                    archiveArtifacts artifacts: 'build/libs/*.jar', allowEmptyArchive: false
+                    archiveArtifacts artifacts: 'build/libs/*.jar', allowEmptyArchive: true
                     publishHTML(target: [
-                        reportName: 'JaCoCo Code Coverage',
-                        reportDir: 'build/reports/jacoco/test/html',
-                        reportFiles: 'index.html',
-                        keepAll: true,
-                        alwaysLinkToLastBuild: true
+                        reportName : 'JaCoCo Report',
+                        reportDir  : 'build/jacocoHtml',
+                        reportFiles: 'index.html'
                     ])
                 }
             }
         }
     }
 }
-
